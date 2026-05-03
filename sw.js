@@ -1,5 +1,5 @@
 /* Personal Workout · Service Worker */
-const VERSION = "v1.2.0-2026-05-03-floating-default";
+const VERSION = "v1.3.0-2026-05-03-migration-floating";
 const SHELL_CACHE = `pw-shell-${VERSION}`;
 const MEDIA_CACHE = `pw-media-${VERSION}`;
 

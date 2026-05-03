@@ -1380,18 +1380,44 @@ const DEFAULT_SETTINGS = {
   onboardingDone: false
 };
 
+/* Schema version per migrations. Bumpa quando vuoi forzare un cambio
+   anche agli utenti che hanno già lo store salvato in localStorage. */
+const SCHEMA_VERSION = 2;
+
+function applyMigrations(s) {
+  const from = s._schema || 0;
+  if (from >= SCHEMA_VERSION) return s;
+
+  // v0 → v1 : nessun cambio (baseline)
+  if (from < 1) {
+    s._schema = 1;
+  }
+
+  // v1 → v2 : default pattern diventa "floating" anche per utenti esistenti.
+  //          Resetto il pattern globale e azzero la posizione draggata del PiP
+  //          così tutti vedono il PiP centrato sopra ai controlli.
+  if (s._schema < 2) {
+    s.settings.pattern = "floating";
+    s._schema = 2;
+  }
+
+  return s;
+}
+
 function loadStore() {
   try {
     const raw = localStorage.getItem(KEY);
     if (raw) {
       const s = JSON.parse(raw);
       s.settings = Object.assign({}, DEFAULT_SETTINGS, s.settings || {});
-      return s;
+      return applyMigrations(s);
     }
   } catch (e) {}
   let mutedExercises = [];
   try { mutedExercises = JSON.parse(localStorage.getItem(KEY_LEGACY_MUTE) || "[]"); } catch (e) {}
+  // store nuovo: parte già a SCHEMA_VERSION corrente
   return {
+    _schema: SCHEMA_VERSION,
     settings: Object.assign({}, DEFAULT_SETTINGS),
     sessions: [],
     mutedExercises,
@@ -2885,6 +2911,8 @@ $("#onbNext").addEventListener("click", () => {
 /* INIT */
 function init() {
   $("#nowPpIcon").innerHTML = ICONS.play;
+  // persiste subito eventuali migrations applicate da loadStore()
+  saveStore(store);
   applyTheme();
   state.view = readHashRoute();
   go(state.view);
