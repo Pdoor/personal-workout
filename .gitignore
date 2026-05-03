@@ -1,0 +1,31 @@
+.DS_Store
+
+# Database/demo di partenza: utile in locale, non serve nell'app finale
+free-exercise-db-main/
+free-exercise-db-main.zip
+
+# File temporanei/sciolti creati durante la ricerca asset
+planksuginocchia
+assets/*.webm
+assets/*.mp4
+assets/.DS_Store
+
+# Sorgenti video originali: l'app usa gli MP4 ottimizzati in *-ios.mp4
+assets/exercises/*.webm
+
+# Vecchi asset non piu' referenziati da index.html
+assets/exercises/CREDITS.md
+assets/exercises/toetaps.mov
+assets/exercises/toetaps-poster.jpg
+assets/exercises/toe-taps.png
+assets/exercises/dead-bug.jpg
+assets/exercises/glute-bridge.png
+assets/exercises/incline-plank-bench.jpg
+assets/exercises/incline-push-up.jpg
+assets/exercises/plank-shoulder-taps.jpg
+assets/exercises/side-leg-raise.jpg
+assets/exercises/side-plank.jpg
+assets/exercises/side-plank-knees.jpg
+assets/exercises/squat-hold.jpg
+assets/exercises/sumo-squat.mp4
+assets/exercises/sumo-squat.webm

@@ -1,0 +1,1353 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f4ef">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Personal Workout">
+  <title>Personal Workout</title>
+  <style>
+    :root {
+      --bg: #f7f4ef;
+      --surface: #fffefa;
+      --surface-strong: #ffffff;
+      --ink: #20211f;
+      --muted: #6a6d67;
+      --line: #ded9cf;
+      --sage: #63786c;
+      --sage-dark: #41584b;
+      --coral: #c96555;
+      --blue: #4e6e91;
+      --mustard: #b5832f;
+      --soft-sage: #dfe8df;
+      --soft-coral: #f3dfd9;
+      --soft-blue: #dde8f1;
+      --shadow: 0 18px 45px rgba(50, 44, 35, 0.12);
+      --radius: 8px;
+      color-scheme: light;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.75), rgba(247,244,239,0.95) 34%),
+        var(--bg);
+      letter-spacing: 0;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+    }
+
+    .app {
+      width: min(100%, 520px);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: max(16px, env(safe-area-inset-top)) 16px max(90px, calc(22px + env(safe-area-inset-bottom)));
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .brand {
+      display: grid;
+      gap: 2px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.03;
+      letter-spacing: 0;
+    }
+
+    .brand span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .status-pill {
+      min-width: 88px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.72);
+      border-radius: 999px;
+      padding: 8px 10px;
+      text-align: center;
+      color: var(--sage-dark);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 10px 0 14px;
+    }
+
+    .tab {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.76);
+      border-radius: var(--radius);
+      padding: 12px 10px;
+      text-align: left;
+      box-shadow: none;
+    }
+
+    .tab strong,
+    .tab span {
+      display: block;
+      overflow-wrap: anywhere;
+    }
+
+    .tab strong {
+      font-size: 14px;
+      line-height: 1.12;
+    }
+
+    .tab span {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .tab[aria-pressed="true"] {
+      border-color: transparent;
+      background: var(--sage-dark);
+      color: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .tab[aria-pressed="true"] span {
+      color: rgba(255,255,255,0.82);
+    }
+
+    .level-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: -4px 0 14px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.62);
+    }
+
+    .level-button {
+      min-height: 42px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 850;
+    }
+
+    .level-button[aria-pressed="true"] {
+      background: var(--surface-strong);
+      color: var(--sage-dark);
+      box-shadow: 0 7px 16px rgba(50,44,35,0.1);
+    }
+
+    .player {
+      overflow: hidden;
+      border: 1px solid rgba(222, 217, 207, 0.8);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .visual {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 196px;
+      background:
+        linear-gradient(135deg, rgba(99,120,108,0.15), rgba(78,110,145,0.13)),
+        #faf8f2;
+    }
+
+    #mainArt {
+      width: 100%;
+      display: grid;
+      place-items: center;
+    }
+
+    .exercise-art {
+      width: min(70%, 300px);
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 14px 18px rgba(38, 35, 30, 0.12));
+    }
+
+    .exercise-photo {
+      width: min(88%, 360px);
+      height: 178px;
+      border-radius: var(--radius);
+      object-fit: contain;
+      display: block;
+      background: rgba(255,255,255,0.45);
+      filter: drop-shadow(0 14px 18px rgba(38, 35, 30, 0.12));
+    }
+
+    .video-wrap {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 100%;
+    }
+
+    .media-actions {
+      position: absolute;
+      right: 16px;
+      bottom: 12px;
+      z-index: 2;
+      display: inline-flex;
+      gap: 8px;
+    }
+
+    .mute-button,
+    .fullscreen-button {
+      width: 44px;
+      height: 36px;
+      display: inline-grid;
+      place-items: center;
+      border: 1px solid rgba(222,217,207,0.82);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.88);
+      color: var(--ink);
+      box-shadow: 0 10px 22px rgba(38,35,30,0.14);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+    }
+
+    .mute-button svg,
+    .fullscreen-button svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    .photo-pair {
+      width: 100%;
+      display: grid;
+      place-items: center;
+    }
+
+    .photo-pair .exercise-photo + .exercise-photo {
+      display: none;
+    }
+
+    .photo-pair.is-running .exercise-photo {
+      animation: photoStep 1.8s steps(1, end) infinite;
+    }
+
+    .photo-pair.is-running .exercise-photo + .exercise-photo {
+      display: block;
+      grid-area: 1 / 1;
+      animation-delay: 0.9s;
+    }
+
+    .photo-pair.is-running .exercise-photo:first-child {
+      grid-area: 1 / 1;
+    }
+
+    @keyframes photoStep {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    .phase-chip {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.86);
+      border: 1px solid rgba(222,217,207,0.8);
+      padding: 7px 10px;
+      color: var(--sage-dark);
+      font-size: 12px;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .phase-chip::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--sage);
+    }
+
+    .player-body {
+      padding: 12px;
+    }
+
+    .timer-row {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+
+    .timer {
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(48px, 16vw, 68px);
+      line-height: 0.88;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .round {
+      min-width: 92px;
+      text-align: right;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 750;
+      line-height: 1.3;
+    }
+
+    .current-title {
+      margin: 0 0 6px;
+      font-size: 25px;
+      line-height: 1.08;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .current-note {
+      min-height: 34px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.36;
+    }
+
+    .progress-track {
+      position: relative;
+      height: 9px;
+      margin: 10px 0 12px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #ece7dd;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: 999px;
+      background: var(--sage);
+      transition: width 0.2s linear, background 0.2s ease;
+    }
+
+    .phase-rest .progress-fill {
+      background: var(--blue);
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 10px;
+    }
+
+    .control {
+      min-height: 48px;
+      border: 0;
+      border-radius: var(--radius);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 850;
+      font-size: 15px;
+    }
+
+    .control svg {
+      width: 19px;
+      height: 19px;
+      stroke-width: 2.5;
+    }
+
+    .primary {
+      color: #fff;
+      background: var(--sage-dark);
+    }
+
+    .secondary {
+      background: var(--soft-blue);
+      color: #233f5a;
+    }
+
+    .danger {
+      background: var(--soft-coral);
+      color: #79362d;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.7);
+      padding: 10px;
+      min-height: 64px;
+    }
+
+    .metric b,
+    .metric span {
+      display: block;
+    }
+
+    .metric b {
+      font-size: 18px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+      text-transform: uppercase;
+      line-height: 1.25;
+      margin-top: 3px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 18px 0 10px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 19px;
+      line-height: 1.15;
+    }
+
+    .section-title span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .exercise-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .exercise-card {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 76px 1fr auto;
+      gap: 11px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.76);
+      padding: 8px;
+      color: inherit;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      appearance: none;
+    }
+
+    .exercise-card.active {
+      border-color: var(--sage);
+      background: #f4f8f3;
+    }
+
+    .exercise-card:active {
+      transform: scale(0.99);
+    }
+
+    .exercise-card:focus-visible {
+      outline: 3px solid rgba(222, 143, 28, 0.42);
+      outline-offset: 2px;
+    }
+
+    .thumb {
+      width: 76px;
+      height: 62px;
+      display: grid;
+      place-items: center;
+      border-radius: 7px;
+      background: var(--soft-sage);
+      overflow: hidden;
+    }
+
+    .thumb svg {
+      width: 72px;
+      height: 58px;
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .exercise-copy {
+      min-width: 0;
+    }
+
+    .exercise-copy b {
+      display: block;
+      font-size: 15px;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+    }
+
+    .exercise-copy span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.28;
+    }
+
+    .tag {
+      min-width: 44px;
+      border-radius: 999px;
+      background: #eee7da;
+      color: #60513d;
+      padding: 6px 8px;
+      font-size: 12px;
+      font-weight: 850;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .setup-panel {
+      display: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.78);
+      padding: 18px;
+      margin-top: 14px;
+    }
+
+    .setup-panel.is-visible {
+      display: block;
+    }
+
+    .setup-panel h2 {
+      margin: 0 0 8px;
+      font-size: 22px;
+    }
+
+    .setup-panel p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.42;
+      font-size: 14px;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: min(100%, 520px);
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 10px 14px max(10px, env(safe-area-inset-bottom));
+      background: rgba(247,244,239,0.88);
+      backdrop-filter: blur(18px);
+      border-top: 1px solid rgba(222,217,207,0.85);
+    }
+
+    .nav-button {
+      min-height: 50px;
+      border: 0;
+      border-radius: var(--radius);
+      background: transparent;
+      color: var(--muted);
+      display: grid;
+      place-items: center;
+      gap: 2px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .nav-button svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .nav-button.active {
+      background: rgba(65,88,75,0.12);
+      color: var(--sage-dark);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (min-width: 430px) {
+      .visual {
+        min-height: 210px;
+      }
+    }
+
+    @media (max-width: 390px) {
+      .app {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .brand h1 {
+        font-size: 25px;
+      }
+
+      .visual {
+        min-height: 178px;
+      }
+
+      .exercise-photo {
+        height: 160px;
+      }
+
+      .player-body {
+        padding: 13px;
+      }
+
+      .current-title {
+        font-size: 22px;
+      }
+
+      .controls {
+        gap: 8px;
+      }
+
+      .tab {
+        padding: 10px 8px;
+      }
+
+      .tab strong {
+        font-size: 13px;
+      }
+
+      .tab span {
+        font-size: 11px;
+      }
+
+      .control {
+        min-height: 49px;
+        font-size: 14px;
+      }
+
+      .exercise-card {
+        grid-template-columns: 70px 1fr auto;
+      }
+
+      .thumb {
+        width: 70px;
+        height: 58px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div id="workoutView">
+      <header class="topbar">
+        <div class="brand">
+          <h1>Personal Workout</h1>
+          <span>Francesca · casa · senza attrezzi</span>
+        </div>
+        <div class="status-pill" id="stateLabel">Pronta</div>
+      </header>
+
+      <section class="tabs" aria-label="Seleziona workout">
+        <button class="tab" id="coreTab" type="button" aria-pressed="true">
+          <strong>Vita</strong>
+          <span>addome · core</span>
+        </button>
+        <button class="tab" id="legsTab" type="button" aria-pressed="false">
+          <strong>Gambe</strong>
+          <span>cosce · ginocchia</span>
+        </button>
+        <button class="tab" id="glutesTab" type="button" aria-pressed="false">
+          <strong>Glutei</strong>
+          <span>braccia · tono</span>
+        </button>
+      </section>
+
+      <section class="level-switch" aria-label="Seleziona livello">
+        <button class="level-button" id="easyLevel" type="button" aria-pressed="true">Easy</button>
+        <button class="level-button" id="advancedLevel" type="button" aria-pressed="false">Advanced</button>
+      </section>
+
+      <section class="player" id="player">
+        <div class="visual">
+          <div class="phase-chip" id="phaseLabel">Esercizio</div>
+          <div id="mainArt"></div>
+        </div>
+        <div class="player-body">
+          <div class="timer-row">
+            <div class="timer" id="timer">30</div>
+            <div class="round" id="roundLabel">Giro 1/2<br>Esercizio 1/4</div>
+          </div>
+          <h2 class="current-title" id="exerciseName">Plank inclinato</h2>
+          <p class="current-note" id="exerciseCue">Mani su parete o piano alto, corpo lungo, addome attivo.</p>
+          <div class="progress-track" aria-hidden="true">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <div class="controls">
+            <button class="control primary" id="startPauseBtn" type="button">
+              <span id="startIcon"></span>
+              <span id="startText">Start</span>
+            </button>
+            <button class="control secondary" id="nextBtn" type="button">
+              <span id="nextIcon"></span>
+              <span>Avanti</span>
+            </button>
+            <button class="control danger" id="stopBtn" type="button">
+              <span id="stopIcon"></span>
+              <span>Stop</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="summary" aria-label="Riepilogo workout">
+        <div class="metric">
+          <b id="durationMetric">20'</b>
+          <span>durata stimata</span>
+        </div>
+        <div class="metric">
+          <b id="roundsMetric">2</b>
+          <span>giri</span>
+        </div>
+        <div class="metric">
+          <b id="ratioMetric">30/20</b>
+          <span>lavoro recupero</span>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-title">
+          <h2 id="listTitle">Punto vita e addome</h2>
+          <span id="exerciseCount">4 esercizi</span>
+        </div>
+        <div class="exercise-list" id="exerciseList"></div>
+      </section>
+    </div>
+
+    <section class="setup-panel" id="setupView">
+      <h2>Setup</h2>
+      <p>Qui potrai regolare durata, recuperi, numero di giri, livello, audio, notifiche e preferenze personali. La struttura e gia pronta per diventare una pagina separata.</p>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Navigazione">
+    <button class="nav-button active" id="navWorkouts" type="button">
+      <span id="navWorkoutIcon"></span>
+      <span>Workout</span>
+    </button>
+    <button class="nav-button" id="navRun" type="button">
+      <span id="navRunIcon"></span>
+      <span>Esecuzione</span>
+    </button>
+    <button class="nav-button" id="navSetup" type="button">
+      <span id="navSetupIcon"></span>
+      <span>Setup</span>
+    </button>
+  </nav>
+
+  <script>
+    const icons = {
+      play: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 5v14l11-7-11-7Z"/></svg>',
+      pause: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 5v14"/><path d="M16 5v14"/></svg>',
+      next: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m7 6 6 6-6 6"/><path d="m13 6 6 6-6 6"/></svg>',
+      stop: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>',
+      volume: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>',
+      muted: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="m19 9-5 5"/><path d="m14 9 5 5"/></svg>',
+      fullscreen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 3H3v5"/><path d="M16 3h5v5"/><path d="M21 16v5h-5"/><path d="M3 16v5h5"/></svg>',
+      dumbbell: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 7v10"/><path d="M18 7v10"/><path d="M8 9v6"/><path d="M16 9v6"/><path d="M8 12h8"/></svg>',
+      timer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="13" r="8"/><path d="M12 9v5l3 2"/><path d="M9 2h6"/></svg>',
+      setup: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 0 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1A2 2 0 0 1 4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.3 7A2 2 0 0 1 7.1 4.2l.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1A2 2 0 0 1 19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1a2 2 0 0 1 0 4H21a1.7 1.7 0 0 0-1.6 1Z"/></svg>'
+    };
+
+    const categories = {
+      core: {
+        tab: "Vita",
+        title: "Punto vita e addome",
+        easy: [
+          ["Plank inclinato", "Mani su parete, corpo lungo, addome attivo.", "plank", ["assets/exercises/incline-plank-ios.mp4"], "assets/exercises/incline-plank-poster.jpg"],
+          ["Side plank con ginocchia piegate", "Gomito sotto la spalla, ginocchia piegate, bacino alto.", "sidePlank", ["assets/exercises/side-plank-ginocchia-ios.mp4"], "assets/exercises/side-plank-ginocchia-poster.jpg"],
+          ["Dead bug", "Schiena stabile, muovi braccio e gamba opposti lentamente.", "deadBug", ["assets/exercises/dead-bug-ios.mp4"], "assets/exercises/dead-bug-poster.jpg"],
+          ["Toe taps", "Schiena appoggiata, tocca il pavimento alternando i piedi.", "toeTaps", ["assets/exercises/toe-taps-ios.mp4"], "assets/exercises/toe-taps-poster.jpg"]
+        ],
+        advanced: [
+          ["Plank su ginocchia", "Bacino stabile, collo lungo, addome attivo.", "plank", ["assets/exercises/plank-ginocchia.mov"], "assets/exercises/plank-ginocchia-poster.jpg"],
+          ["Side plank corto", "Tieni 10-20 secondi per lato, senza cedere con la spalla.", "sidePlank", ["assets/exercises/side-plank.jpg"]],
+          ["Dead bug lento", "Allunga bene braccio e gamba opposti senza perdere la schiena.", "deadBug", ["assets/exercises/dead-bug-ios.mp4"], "assets/exercises/dead-bug-poster.jpg"],
+          ["Toe taps controllati", "Alterna i piedi senza inarcare la zona lombare.", "toeTaps", ["assets/exercises/toe-taps-ios.mp4"], "assets/exercises/toe-taps-poster.jpg"]
+        ]
+      },
+      legs: {
+        tab: "Gambe",
+        title: "Cosce, ginocchia e tonicita gambe",
+        easy: [
+          ["Sumo squat corto", "Piedi larghi, discesa piccola, ginocchia verso le punte.", "sumo", ["assets/exercises/sumo-squat-ios.mp4"], "assets/exercises/sumo-squat-poster.jpg"],
+          ["Squat laterale", "Sposta il peso su una gamba, piega il ginocchio e torna al centro con controllo.", "lateral", ["assets/exercises/lateral-squat-ios.mp4"], "assets/exercises/lateral-squat-poster.jpg"],
+          ["Side leg raise", "Sdraiata sul fianco, gamba lunga, sali senza slancio.", "sideRaise", ["assets/exercises/side-leg-raise-ios.mp4"], "assets/exercises/side-leg-raise-poster.jpg"],
+          ["Wall sit alto", "Schiena al muro, ginocchia poco piegate, respiro fluido.", "wallSit", ["assets/exercises/wall-sit-alto-ios.mp4"], "assets/exercises/wall-sit-alto-poster.jpg"]
+        ],
+        advanced: [
+          ["Sumo squat lento", "Scendi in 3 secondi, sali senza rimbalzi.", "sumo", ["assets/exercises/sumo-squat-ios.mp4"], "assets/exercises/sumo-squat-poster.jpg"],
+          ["Affondo laterale corto", "Ampiezza comoda, peso sul tallone della gamba che piega.", "lateral", ["assets/exercises/affondi-laterali-ios.mp4"], "assets/exercises/affondi-laterali-poster.jpg"],
+          ["Side leg raise lento", "20 secondi per lato, punta del piede leggermente in avanti.", "sideRaise", ["assets/exercises/side-leg-raise-ios.mp4"], "assets/exercises/side-leg-raise-poster.jpg"],
+          ["Squat hold leggero", "Mantieni una posizione comoda, senza dolore al ginocchio.", "wallSit", ["assets/exercises/squat-hold-ios.mp4"], "assets/exercises/squat-hold-poster.jpg"]
+        ]
+      },
+      glutes: {
+        tab: "Glutei",
+        title: "Glutei e rifinitura braccia",
+        easy: [
+          ["Glute bridge", "Spingi dai talloni, stringi i glutei, non inarcare la schiena.", "bridge", ["assets/exercises/glute-bridge-ios.mp4"], "assets/exercises/glute-bridge-poster.jpg"],
+          ["Donkey kick piccolo", "Ginocchia a terra, spinta corta, bacino fermo.", "donkey", ["assets/exercises/donkey-kick-piccolo-ios.mp4"], "assets/exercises/donkey-kick-piccolo-poster.jpg"],
+          ["Push-up al muro", "Mani al muro, gomiti morbidi, corpo allineato.", "wallPush", ["assets/exercises/wall-push-up-ios.mp4"], "assets/exercises/wall-push-up-poster.jpg"],
+          ["Plank alto tocco spalle", "Al muro o da terra, tocca una spalla alla volta.", "shoulderTap", ["assets/exercises/plank-shoulder-taps-ios.mp4"], "assets/exercises/plank-shoulder-taps-poster.jpg"]
+        ],
+        advanced: [
+          ["Glute bridge lento", "Pausa di 1 secondo in alto e discesa controllata.", "bridge", ["assets/exercises/glute-bridge-ios.mp4"], "assets/exercises/glute-bridge-poster.jpg"],
+          ["Donkey kick con pausa", "20 secondi per lato, movimento piccolo e preciso.", "donkey", ["assets/exercises/donkey-kick-ios.mp4"], "assets/exercises/donkey-kick-poster.jpg"],
+          ["Push-up su appoggio alto", "Gomiti a 45 gradi, scendi e sali senza fretta.", "wallPush", ["assets/exercises/incline-push-up-ios.mp4"], "assets/exercises/incline-push-up-poster.jpg"],
+          ["Plank alto tocco spalle", "Piedi larghi, bacino fermo, tocchi lenti.", "shoulderTap", ["assets/exercises/plank-shoulder-taps-ios.mp4"], "assets/exercises/plank-shoulder-taps-poster.jpg"]
+        ]
+      }
+    };
+
+    const workouts = Object.fromEntries(
+      Object.entries(categories).map(([categoryKey, category]) => [
+        categoryKey,
+        {
+          easy: {
+            title: `${category.title} · Easy`,
+            work: 30,
+            rest: 20,
+            rounds: 2,
+            exercises: category.easy.map(([name, cue, art, images, poster]) => ({ name, cue, art, images, poster }))
+          },
+          advanced: {
+            title: `${category.title} · Advanced`,
+            work: 40,
+            rest: 20,
+            rounds: 3,
+            exercises: category.advanced.map(([name, cue, art, images, poster]) => ({ name, cue, art, images, poster }))
+          }
+        }
+      ])
+    );
+
+    const els = {
+      player: document.getElementById("player"),
+      stateLabel: document.getElementById("stateLabel"),
+      phaseLabel: document.getElementById("phaseLabel"),
+      timer: document.getElementById("timer"),
+      roundLabel: document.getElementById("roundLabel"),
+      exerciseName: document.getElementById("exerciseName"),
+      exerciseCue: document.getElementById("exerciseCue"),
+      progressFill: document.getElementById("progressFill"),
+      startPauseBtn: document.getElementById("startPauseBtn"),
+      nextBtn: document.getElementById("nextBtn"),
+      stopBtn: document.getElementById("stopBtn"),
+      startIcon: document.getElementById("startIcon"),
+      startText: document.getElementById("startText"),
+      nextIcon: document.getElementById("nextIcon"),
+      stopIcon: document.getElementById("stopIcon"),
+      mainArt: document.getElementById("mainArt"),
+      exerciseList: document.getElementById("exerciseList"),
+      listTitle: document.getElementById("listTitle"),
+      exerciseCount: document.getElementById("exerciseCount"),
+      durationMetric: document.getElementById("durationMetric"),
+      roundsMetric: document.getElementById("roundsMetric"),
+      ratioMetric: document.getElementById("ratioMetric"),
+      coreTab: document.getElementById("coreTab"),
+      legsTab: document.getElementById("legsTab"),
+      glutesTab: document.getElementById("glutesTab"),
+      easyLevel: document.getElementById("easyLevel"),
+      advancedLevel: document.getElementById("advancedLevel"),
+      workoutView: document.getElementById("workoutView"),
+      setupView: document.getElementById("setupView"),
+      navWorkouts: document.getElementById("navWorkouts"),
+      navRun: document.getElementById("navRun"),
+      navSetup: document.getElementById("navSetup")
+    };
+
+    let selectedCategory = "core";
+    let selectedLevel = "easy";
+    let status = "idle";
+    let phase = "work";
+    let roundIndex = 0;
+    let exerciseIndex = 0;
+    let remaining = workouts.core.easy.work;
+    let phaseTotal = workouts.core.easy.work;
+    let intervalId = null;
+    let wakeLock = null;
+    let renderedMediaKey = "";
+    const mutedExerciseKeys = new Set(JSON.parse(localStorage.getItem("personalWorkoutMutedExercises") || "[]"));
+
+    els.startIcon.innerHTML = icons.play;
+    els.nextIcon.innerHTML = icons.next;
+    els.stopIcon.innerHTML = icons.stop;
+    document.getElementById("navWorkoutIcon").innerHTML = icons.dumbbell;
+    document.getElementById("navRunIcon").innerHTML = icons.timer;
+    document.getElementById("navSetupIcon").innerHTML = icons.setup;
+
+    function isVideo(src = "") {
+      return /\.(mov|mp4|webm)$/i.test(src);
+    }
+
+    function exerciseAudioKey(exercise) {
+      return `${selectedCategory}:${selectedLevel}:${exercise.name}`;
+    }
+
+    function isExerciseMuted(exercise) {
+      return mutedExerciseKeys.has(exerciseAudioKey(exercise));
+    }
+
+    function setExerciseMuted(exercise, muted) {
+      const key = exerciseAudioKey(exercise);
+      if (muted) mutedExerciseKeys.add(key);
+      else mutedExerciseKeys.delete(key);
+      localStorage.setItem("personalWorkoutMutedExercises", JSON.stringify([...mutedExerciseKeys]));
+    }
+
+    function art(type, large = false) {
+      const sizeClass = large ? "exercise-art" : "";
+      const stroke = "#243329";
+      const accent = "#c96555";
+      const line = "#6b7e71";
+      const common = `class="${sizeClass}" viewBox="0 0 220 150" role="img" aria-label="Miniatura esercizio"`;
+      const floor = `<path d="M25 124h170" stroke="${line}" stroke-width="5" stroke-linecap="round" opacity=".28"/>`;
+      const head = (cx, cy) => `<circle cx="${cx}" cy="${cy}" r="10" fill="#f2c7b8" stroke="${stroke}" stroke-width="4"/>`;
+      const limb = (d, color = stroke) => `<path d="${d}" fill="none" stroke="${color}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>`;
+
+      const drawings = {
+        plank: `${floor}${head(153,82)}${limb("M62 102 104 88 144 87")}${limb("M70 103 48 124")}${limb("M105 91 96 124")}${limb("M143 90 166 122", accent)}`,
+        sidePlank: `${floor}${head(148,80)}${limb("M70 115 111 96 143 91")}${limb("M83 112 62 126")}${limb("M110 98 108 126", accent)}${limb("M129 93 150 60", accent)}`,
+        deadBug: `${floor}${head(108,91)}${limb("M88 105 121 105 142 98")}${limb("M94 101 71 76", accent)}${limb("M126 101 147 72")}${limb("M96 111 78 134")}${limb("M124 111 151 132", accent)}`,
+        toeTaps: `${floor}${head(92,86)}${limb("M75 102 115 106 144 104")}${limb("M111 106 99 70", accent)}${limb("M130 106 153 78")}${limb("M94 111 76 132")}${limb("M132 110 151 130", accent)}`,
+        sumo: `${floor}${head(111,43)}${limb("M111 55 111 86")}${limb("M88 72 134 72", accent)}${limb("M108 87 76 121")}${limb("M114 87 146 121")}`,
+        lateral: `${floor}${head(104,43)}${limb("M104 55 116 86")}${limb("M86 74 135 73", accent)}${limb("M113 88 78 123")}${limb("M119 88 162 110")}`,
+        sideRaise: `${floor}${head(70,100)}${limb("M82 105 123 112 164 118")}${limb("M126 112 162 78", accent)}${limb("M92 112 72 126")}`,
+        wallSit: `<path d="M57 28v96" stroke="${line}" stroke-width="7" stroke-linecap="round" opacity=".4"/>${floor}${head(87,59)}${limb("M83 72 92 98 128 98")}${limb("M128 98 158 123", accent)}${limb("M94 100 76 123")}`,
+        bridge: `${floor}${head(62,101)}${limb("M74 110 111 83 151 103")}${limb("M151 103 169 125", accent)}${limb("M91 101 78 124")}`,
+        donkey: `${floor}${head(69,89)}${limb("M80 95 116 92 142 104")}${limb("M92 100 78 124")}${limb("M121 99 120 124")}${limb("M141 103 170 77", accent)}`,
+        wallPush: `<path d="M174 26v98" stroke="${line}" stroke-width="7" stroke-linecap="round" opacity=".38"/>${floor}${head(126,61)}${limb("M115 72 87 99 74 123")}${limb("M114 75 158 75", accent)}${limb("M91 100 131 124")}`,
+        shoulderTap: `${floor}${head(146,83)}${limb("M67 104 106 91 144 88")}${limb("M73 105 52 124")}${limb("M108 93 97 124")}${limb("M138 90 119 73", accent)}`
+      };
+
+      return `<svg ${common}>${drawings[type] || drawings.plank}</svg>`;
+    }
+
+    function mediaForExercise(exercise, large = false) {
+      if (!exercise.images || !exercise.images.length) {
+        return art(exercise.art, large);
+      }
+
+      const media = (src, alt, className = "", allowAudio = false) => {
+        if (isVideo(src)) {
+          const muted = allowAudio ? isExerciseMuted(exercise) : true;
+          return `<video class="${className}" src="${src}" aria-label="${alt}" ${muted ? "muted" : ""} loop playsinline autoplay preload="metadata"></video>`;
+        }
+        return `<img class="${className}" src="${src}" alt="${alt}" loading="lazy">`;
+      };
+
+      if (!large) {
+        return `<img src="${exercise.poster || exercise.images[0]}" alt="${exercise.name}" loading="lazy">`;
+      }
+
+      const runningClass = status === "running" && phase === "work" && exercise.images.length > 1 ? " is-running" : "";
+      const second = exercise.images[1] ? media(exercise.images[1], `${exercise.name} fase 2`, "exercise-photo") : "";
+      const hasVideo = exercise.images.some(isVideo);
+      const mediaActions = hasVideo ? `
+        <div class="media-actions">
+          <button class="fullscreen-button" type="button" data-fullscreen-toggle aria-label="Apri video a schermo intero">
+            ${icons.fullscreen}
+          </button>
+          <button class="mute-button" type="button" data-mute-toggle aria-label="${isExerciseMuted(exercise) ? "Attiva audio" : "Disattiva audio"}">
+            ${isExerciseMuted(exercise) ? icons.muted : icons.volume}
+          </button>
+        </div>
+      ` : "";
+      return `
+        <div class="photo-pair${runningClass}">
+          <div class="video-wrap">
+            ${media(exercise.images[0], `${exercise.name} fase 1`, "exercise-photo", true)}
+            ${mediaActions}
+          </div>
+          ${second}
+        </div>
+      `;
+    }
+
+    function syncCurrentVideo() {
+      const exercise = currentExercise();
+      const video = els.mainArt.querySelector("video");
+      if (!video) return;
+      video.muted = isExerciseMuted(exercise);
+      video.volume = 1;
+      video.play().catch(() => {});
+    }
+
+    function openCurrentVideoFullscreen() {
+      const video = els.mainArt.querySelector("video");
+      if (!video) return;
+      video.controls = true;
+      video.play().catch(() => {});
+
+      if (typeof video.webkitEnterFullscreen === "function") {
+        video.webkitEnterFullscreen();
+        return;
+      }
+
+      if (video.requestFullscreen) {
+        video.requestFullscreen().catch(() => {});
+        return;
+      }
+
+      if (video.webkitRequestFullscreen) {
+        video.webkitRequestFullscreen();
+      }
+    }
+
+    function currentWorkout() {
+      return workouts[selectedCategory][selectedLevel];
+    }
+
+    function currentExercise() {
+      return currentWorkout().exercises[exerciseIndex];
+    }
+
+    function nextExerciseAfterRest() {
+      const workout = currentWorkout();
+      if (exerciseIndex < workout.exercises.length - 1) {
+        return workout.exercises[exerciseIndex + 1];
+      }
+      if (roundIndex < workout.rounds - 1) {
+        return workout.exercises[0];
+      }
+      return null;
+    }
+
+    function resetTimer() {
+      const workout = currentWorkout();
+      phase = "work";
+      roundIndex = 0;
+      exerciseIndex = 0;
+      remaining = workout.work;
+      phaseTotal = workout.work;
+      status = "idle";
+      stopInterval();
+      render();
+    }
+
+    function stopInterval() {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    }
+
+    function requestWakeLock() {
+      if ("wakeLock" in navigator && !wakeLock) {
+        navigator.wakeLock.request("screen").then(lock => {
+          wakeLock = lock;
+          wakeLock.addEventListener("release", () => wakeLock = null);
+        }).catch(() => {});
+      }
+    }
+
+    function releaseWakeLock() {
+      if (wakeLock) {
+        wakeLock.release().catch(() => {});
+        wakeLock = null;
+      }
+    }
+
+    function tick() {
+      if (remaining > 1) {
+        remaining -= 1;
+      } else {
+        advancePhase();
+      }
+      render();
+    }
+
+    function advancePhase() {
+      const workout = currentWorkout();
+      const lastExercise = exerciseIndex === workout.exercises.length - 1;
+      const lastRound = roundIndex === workout.rounds - 1;
+
+      if (phase === "work" && !(lastExercise && lastRound)) {
+        phase = "rest";
+        remaining = workout.rest;
+        phaseTotal = workout.rest;
+        vibrate();
+        return;
+      }
+
+      if (lastExercise) {
+        if (lastRound) {
+          completeWorkout();
+          return;
+        }
+        roundIndex += 1;
+        exerciseIndex = 0;
+      } else {
+        exerciseIndex += 1;
+      }
+      phase = "work";
+      remaining = workout.work;
+      phaseTotal = workout.work;
+      vibrate();
+    }
+
+    function completeWorkout() {
+      stopInterval();
+      status = "done";
+      phase = "work";
+      remaining = 0;
+      releaseWakeLock();
+      vibrate([80, 60, 80]);
+    }
+
+    function vibrate(pattern = 30) {
+      if ("vibrate" in navigator) navigator.vibrate(pattern);
+    }
+
+    function startPause() {
+      if (status === "done") resetTimer();
+      if (status === "running") {
+        status = "paused";
+        stopInterval();
+        releaseWakeLock();
+      } else {
+        status = "running";
+        requestWakeLock();
+        stopInterval();
+        intervalId = setInterval(tick, 1000);
+      }
+      render();
+    }
+
+    function stopWorkout() {
+      resetTimer();
+      releaseWakeLock();
+    }
+
+    function nextStep() {
+      if (status === "done") return;
+      advancePhase();
+      render();
+    }
+
+    function selectExercise(index) {
+      const workout = currentWorkout();
+      if (index < 0 || index >= workout.exercises.length) return;
+      stopInterval();
+      releaseWakeLock();
+      exerciseIndex = index;
+      phase = "work";
+      status = "ready";
+      remaining = workout.work;
+      phaseTotal = workout.work;
+      render();
+      els.player.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function chooseCategory(key) {
+      selectedCategory = key;
+      resetTimer();
+      showWorkoutView();
+    }
+
+    function chooseLevel(key) {
+      selectedLevel = key;
+      resetTimer();
+      showWorkoutView();
+    }
+
+    function showWorkoutView() {
+      els.workoutView.classList.remove("hidden");
+      els.setupView.classList.remove("is-visible");
+      els.navWorkouts.classList.add("active");
+      els.navRun.classList.remove("active");
+      els.navSetup.classList.remove("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function showRunView() {
+      showWorkoutView();
+      document.getElementById("player").scrollIntoView({ behavior: "smooth", block: "start" });
+      els.navWorkouts.classList.remove("active");
+      els.navRun.classList.add("active");
+    }
+
+    function showSetupView() {
+      els.workoutView.classList.add("hidden");
+      els.setupView.classList.add("is-visible");
+      els.navWorkouts.classList.remove("active");
+      els.navRun.classList.remove("active");
+      els.navSetup.classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function durationMinutes(workout) {
+      const work = workout.work * workout.exercises.length * workout.rounds;
+      const rests = workout.rest * ((workout.exercises.length * workout.rounds) - 1);
+      return Math.ceil((work + rests) / 60);
+    }
+
+    function renderExerciseList() {
+      const workout = currentWorkout();
+      els.exerciseList.innerHTML = workout.exercises.map((exercise, index) => {
+        const active = index === exerciseIndex ? " active" : "";
+        return `
+          <button class="exercise-card${active}" type="button" data-exercise-index="${index}" aria-pressed="${index === exerciseIndex}">
+            <div class="thumb" aria-hidden="true">${mediaForExercise(exercise)}</div>
+            <div class="exercise-copy">
+              <b>${exercise.name}</b>
+              <span>${exercise.cue}</span>
+            </div>
+            <div class="tag">${workout.work}s</div>
+          </button>
+        `;
+      }).join("");
+    }
+
+    function render() {
+      const workout = currentWorkout();
+      const exercise = currentExercise();
+      const totalExercises = workout.exercises.length;
+      const progress = phaseTotal ? ((phaseTotal - remaining) / phaseTotal) * 100 : 100;
+      const stateText = status === "running" ? "Attiva" : status === "paused" ? "Pausa" : status === "done" ? "Fatto" : "Pronta";
+
+      els.player.classList.toggle("phase-rest", phase === "rest");
+      els.stateLabel.textContent = stateText;
+      els.phaseLabel.textContent = phase === "rest" ? "Recupero" : "Esercizio";
+      els.timer.textContent = String(remaining).padStart(2, "0");
+      els.roundLabel.innerHTML = `Giro ${roundIndex + 1}/${workout.rounds}<br>Esercizio ${exerciseIndex + 1}/${totalExercises}`;
+      els.exerciseName.textContent = phase === "rest" ? "Recupero" : exercise.name;
+      const nextExercise = nextExerciseAfterRest();
+      els.exerciseCue.textContent = phase === "rest" ? `Prossimo: ${nextExercise ? nextExercise.name : "fine workout"}. Respira, sciogli spalle e gambe.` : exercise.cue;
+      els.progressFill.style.width = `${Math.max(0, Math.min(100, progress))}%`;
+      const mediaKey = [
+        selectedCategory,
+        selectedLevel,
+        exerciseIndex,
+        phase,
+        status === "running",
+        exercise.name,
+        JSON.stringify(exercise.images || []),
+        exercise.poster || "",
+        isExerciseMuted(exercise)
+      ].join("|");
+      if (mediaKey !== renderedMediaKey) {
+        els.mainArt.innerHTML = mediaForExercise(exercise, true);
+        renderedMediaKey = mediaKey;
+      }
+      syncCurrentVideo();
+
+      els.startIcon.innerHTML = status === "running" ? icons.pause : icons.play;
+      els.startText.textContent = status === "running" ? "Pause" : status === "paused" ? "Riprendi" : status === "done" ? "Rifai" : "Start";
+
+      els.coreTab.setAttribute("aria-pressed", selectedCategory === "core");
+      els.legsTab.setAttribute("aria-pressed", selectedCategory === "legs");
+      els.glutesTab.setAttribute("aria-pressed", selectedCategory === "glutes");
+      els.easyLevel.setAttribute("aria-pressed", selectedLevel === "easy");
+      els.advancedLevel.setAttribute("aria-pressed", selectedLevel === "advanced");
+      els.listTitle.textContent = workout.title;
+      els.exerciseCount.textContent = `${workout.exercises.length} esercizi`;
+      els.durationMetric.textContent = `${durationMinutes(workout)}'`;
+      els.roundsMetric.textContent = workout.rounds;
+      els.ratioMetric.textContent = `${workout.work}/${workout.rest}`;
+      renderExerciseList();
+    }
+
+    els.coreTab.addEventListener("click", () => chooseCategory("core"));
+    els.legsTab.addEventListener("click", () => chooseCategory("legs"));
+    els.glutesTab.addEventListener("click", () => chooseCategory("glutes"));
+    els.easyLevel.addEventListener("click", () => chooseLevel("easy"));
+    els.advancedLevel.addEventListener("click", () => chooseLevel("advanced"));
+    els.startPauseBtn.addEventListener("click", startPause);
+    els.nextBtn.addEventListener("click", nextStep);
+    els.stopBtn.addEventListener("click", stopWorkout);
+    els.mainArt.addEventListener("click", (event) => {
+      const fullscreenButton = event.target.closest("[data-fullscreen-toggle]");
+      if (fullscreenButton) {
+        openCurrentVideoFullscreen();
+        return;
+      }
+
+      const muteButton = event.target.closest("[data-mute-toggle]");
+      if (!muteButton) return;
+      const exercise = currentExercise();
+      setExerciseMuted(exercise, !isExerciseMuted(exercise));
+      renderedMediaKey = "";
+      render();
+    });
+    els.exerciseList.addEventListener("click", (event) => {
+      const card = event.target.closest(".exercise-card");
+      if (!card) return;
+      selectExercise(Number(card.dataset.exerciseIndex));
+    });
+    els.navWorkouts.addEventListener("click", showWorkoutView);
+    els.navRun.addEventListener("click", showRunView);
+    els.navSetup.addEventListener("click", showSetupView);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible" && status === "running") requestWakeLock();
+    });
+
+    render();
+  </script>
+</body>
+</html>
