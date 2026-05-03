@@ -1479,13 +1479,9 @@ function setPatternOverride(ex, value) {
 }
 /* Hint costanti di pattern per esercizi specifici.
    Priorità: override utente (Library detail)  >  hint qui sotto  >  default globale.
-   Usato per esercizi il cui video richiede una presentazione diversa (es. landscape
-   nativo, o visualizzazione full-bleed perché il PiP portrait taglierebbe troppo). */
-const EXERCISE_PATTERN_HINTS = {
-  // Plank su ginocchia (advanced/core): video ripreso landscape-feel.
-  // Forziamo Cinematic full-bleed così il movimento si vede grande, niente PiP portrait.
-  "core:advanced:Plank su ginocchia": "cinematic"
-};
+   Vuoto al momento — l'utente sceglie il pattern globale dalle Settings, e può
+   forzare un override per esercizio dalla Library detail. */
+const EXERCISE_PATTERN_HINTS = {};
 
 function effectivePattern(ex) {
   if (!ex) return store.settings.pattern;

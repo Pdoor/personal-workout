@@ -1,5 +1,5 @@
 /* Personal Workout · Service Worker */
-const VERSION = "v1.4.0-2026-05-03-knee-plank";
+const VERSION = "v1.4.1-2026-05-03-fix-floating";
 const SHELL_CACHE = `pw-shell-${VERSION}`;
 const MEDIA_CACHE = `pw-media-${VERSION}`;
 
