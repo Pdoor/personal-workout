@@ -1,5 +1,5 @@
 /* Personal Workout · Service Worker */
-const VERSION = "v1.1.0-2026-05-03-rename";
+const VERSION = "v1.2.0-2026-05-03-floating-default";
 const SHELL_CACHE = `pw-shell-${VERSION}`;
 const MEDIA_CACHE = `pw-media-${VERSION}`;
 

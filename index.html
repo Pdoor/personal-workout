@@ -535,7 +535,8 @@ a { color: var(--primary); text-decoration: none; }
 .pip-floater {
   position: absolute;
   bottom: calc(108px + env(safe-area-inset-bottom));
-  right: 14px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 144px; height: 256px;
   border-radius: 18px; overflow: hidden;
   background: #000;
@@ -1367,7 +1368,7 @@ const KEY = "personalWorkout.v1";
 const KEY_LEGACY_MUTE = "personalWorkoutMutedExercises";
 
 const DEFAULT_SETTINGS = {
-  pattern: "cinematic",
+  pattern: "floating",
   nextPreview: true,
   coachOnLongPress: true,
   autoplayLoop: true,
@@ -2567,8 +2568,14 @@ function renderPip(ex) {
   }
   if (state.pipPos.x !== null) {
     pip.style.right = "auto"; pip.style.bottom = "auto";
+    pip.style.transform = "none";
     pip.style.left = state.pipPos.x + "px";
     pip.style.top = state.pipPos.y + "px";
+  } else {
+    // posizione di default: centrato sopra ai controlli (CSS rule)
+    pip.style.right = ""; pip.style.bottom = "";
+    pip.style.left = ""; pip.style.top = "";
+    pip.style.transform = "";
   }
 }
 
@@ -2794,6 +2801,8 @@ function pipDown(e) {
   const r = pip.getBoundingClientRect();
   pipOff.x = t.clientX - r.left;
   pipOff.y = t.clientY - r.top;
+  // disabilita la centratura iniziale al primo drag
+  pip.style.transform = "none";
 }
 function pipMove(e) {
   if (!pipDrag) return;
@@ -2801,6 +2810,7 @@ function pipMove(e) {
   const x = t.clientX - pipOff.x;
   const y = t.clientY - pipOff.y;
   pip.style.right = "auto"; pip.style.bottom = "auto";
+  pip.style.transform = "none";
   pip.style.left = Math.max(8, Math.min(window.innerWidth - pip.offsetWidth - 8, x)) + "px";
   pip.style.top = Math.max(8, Math.min(window.innerHeight - pip.offsetHeight - 8, y)) + "px";
   state.pipPos.x = parseInt(pip.style.left); state.pipPos.y = parseInt(pip.style.top);
