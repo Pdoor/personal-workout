@@ -534,7 +534,9 @@ a { color: var(--primary); text-decoration: none; }
 
 .pip-floater {
   position: absolute;
-  bottom: calc(108px + env(safe-area-inset-bottom));
+  /* bordo inferiore allineato col bordo superiore del pulsante "Inizia"
+     (controls-dock: bottom 20 + altezza c 56 = top 76, + safe-area) */
+  bottom: calc(76px + env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);
   width: 144px; height: 256px;
@@ -667,8 +669,11 @@ a { color: var(--primary); text-decoration: none; }
   background: color-mix(in srgb, #fff 14%, transparent);
   overflow: hidden; z-index: 5;
 }
-.now[data-pattern="floating"] .progress-line,
 .now[data-pattern="minimal"] .progress-line { background: var(--surface-3); }
+/* In pattern floating la progress-line andrebbe a finire dentro al PiP
+   (PiP bottom 76, progress bottom 102): la nascondiamo. Il countdown è
+   già visibile nell'anello timer in alto. */
+.now[data-pattern="floating"] .progress-line { display: none; }
 .progress-line i {
   display: block; height: 100%;
   background: linear-gradient(90deg, var(--sage-300), var(--coral-300));
@@ -1281,7 +1286,7 @@ const CATEGORIES = {
       ["Toe taps", "Schiena appoggiata, tocca il pavimento alternando i piedi.", "toeTaps", ["assets/exercises/toe-taps-ios.mp4"], "assets/exercises/toe-taps-poster.jpg"]
     ],
     advanced: [
-      ["Plank su ginocchia", "Bacino stabile, collo lungo, addome attivo.", "plank", ["assets/exercises/plank-ginocchia.mov"], "assets/exercises/plank-ginocchia-poster.jpg"],
+      ["Plank su ginocchia", "Bacino stabile, collo lungo, addome attivo.", "plank", ["assets/exercises/plank-ginocchia-ios.mp4"], "assets/exercises/plank-ginocchia-poster.jpg"],
       ["Side plank corto", "Tieni 10-20 secondi per lato, senza cedere con la spalla.", "sidePlank", ["assets/exercises/side-plank.jpg"]],
       ["Dead bug lento", "Allunga bene braccio e gamba opposti senza perdere la schiena.", "deadBug", ["assets/exercises/dead-bug-ios.mp4"], "assets/exercises/dead-bug-poster.jpg"],
       ["Toe taps controllati", "Alterna i piedi senza inarcare la zona lombare.", "toeTaps", ["assets/exercises/toe-taps-ios.mp4"], "assets/exercises/toe-taps-poster.jpg"]
@@ -1472,9 +1477,23 @@ function setPatternOverride(ex, value) {
   else store.patternOverrides[k] = value;
   saveStore(store);
 }
+/* Hint costanti di pattern per esercizi specifici.
+   Priorità: override utente (Library detail)  >  hint qui sotto  >  default globale.
+   Usato per esercizi il cui video richiede una presentazione diversa (es. landscape
+   nativo, o visualizzazione full-bleed perché il PiP portrait taglierebbe troppo). */
+const EXERCISE_PATTERN_HINTS = {
+  // Plank su ginocchia (advanced/core): video ripreso landscape-feel.
+  // Forziamo Cinematic full-bleed così il movimento si vede grande, niente PiP portrait.
+  "core:advanced:Plank su ginocchia": "cinematic"
+};
+
 function effectivePattern(ex) {
-  const override = ex ? getPatternOverride(ex) : null;
-  return override || store.settings.pattern;
+  if (!ex) return store.settings.pattern;
+  const override = getPatternOverride(ex);
+  if (override) return override;
+  const hint = EXERCISE_PATTERN_HINTS[exerciseId(state.category, state.level, ex.name)];
+  if (hint) return hint;
+  return store.settings.pattern;
 }
 function currentWorkout() { return WORKOUTS[state.category][state.level]; }
 function currentExercise() { return currentWorkout().exercises[state.exerciseIndex]; }
@@ -2439,6 +2458,10 @@ function openNow() {
     state.remaining = currentWorkout().work;
     state.phaseTotal = currentWorkout().work;
   }
+  // ogni volta che si apre Now Training il PiP torna centrato (default).
+  // L'utente può comunque draggarlo durante il workout: la posizione vale
+  // fino all'uscita, poi al prossimo apri torna centrato.
+  state.pipPos = { x: null, y: null };
   nowOpen = true;
   nowEl.classList.add("is-active");
   $("#tabbar").classList.add("hidden");

@@ -56,6 +56,10 @@ assets/exercises/plank-shoulder-taps.jpg
 assets/exercises/side-leg-raise.jpg
 assets/exercises/side-plank-knees.jpg
 assets/exercises/squat-hold.jpg
+# .mov originale di plank-ginocchia: sostituito da plank-ginocchia-ios.mp4
+assets/exercises/plank-ginocchia.mov
+# Sorgente raw del nuovo Knee plank (è già coperto da *.webm sopra ma esplicito)
+Knee plank*.webm
 
 # Nota: `assets/exercises/side-plank.jpg` è MANTENUTO perché usato dall'app
 # come fallback statico per "Side plank corto" (advanced/core).
