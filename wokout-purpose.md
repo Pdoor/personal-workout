@@ -1,4 +1,4 @@
-# Programma personalizzato per Francesca
+# Programma personalizzato 
 
 Workout per adulto, sesso femminile, che svolge quasi quotidianamente 30-40 minuti di camminata sostenuta, quindi la parte cardio di base è già presente. In questo contesto conviene ottimizzare il programma inserendo mini-sessioni a corpo libero orientate soprattutto a tonificazione, core, cosce interne ed esterne, glutei e infine braccia, perché la combinazione tra camminata e lavoro di forza è particolarmente utile per migliorare composizione corporea e tono muscolare [cite:38][cite:41].
 
