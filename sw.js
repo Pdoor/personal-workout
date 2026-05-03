@@ -1,5 +1,5 @@
 /* Personal Workout · Service Worker */
-const VERSION = "v1.0.0-2026-05-03";
+const VERSION = "v1.1.0-2026-05-03-rename";
 const SHELL_CACHE = `pw-shell-${VERSION}`;
 const MEDIA_CACHE = `pw-media-${VERSION}`;
 
@@ -9,7 +9,7 @@ const SHELL_ASSETS = [
   "./index.html",
   "./manifest.webmanifest",
   "./icon.svg",
-  "./wokout-purpose.md"
+  "./workout-purpose-v1.md"
 ];
 
 // Pattern URL per i media degli esercizi (cache stale-while-revalidate)

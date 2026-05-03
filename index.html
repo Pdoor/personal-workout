@@ -2328,7 +2328,7 @@ let _purposeCache = null;
 async function loadPurposeMd() {
   if (_purposeCache !== null) return _purposeCache;
   try {
-    const res = await fetch("wokout-purpose.md", { cache: "force-cache" });
+    const res = await fetch("workout-purpose-v1.md", { cache: "force-cache" });
     if (!res.ok) throw new Error("not found");
     _purposeCache = await res.text();
     return _purposeCache;
@@ -2342,14 +2342,14 @@ function renderGuide() {
     <div class="subview-head">
       <button class="back" data-back="profile">${ICONS.back} Profilo</button>
       <h2>Guida</h2>
-      <a class="icon-btn" id="guideOpenSrc" href="wokout-purpose.md" target="_blank" rel="noopener" aria-label="Apri documento sorgente">${ICONS.share}</a>
+      <a class="icon-btn" id="guideOpenSrc" href="workout-purpose-v1.md" target="_blank" rel="noopener" aria-label="Apri documento sorgente">${ICONS.share}</a>
     </div>
 
     <div class="guide-card" id="guidePurposeWrap">
       <div class="purpose-eyebrow">Programma · documento di base</div>
       <div id="guidePurpose" class="md-content"><p class="md-p" style="color:var(--muted)">Caricamento documento…</p></div>
       <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-        <a class="chip sage" href="wokout-purpose.md" target="_blank" rel="noopener">Apri sorgente .md</a>
+        <a class="chip sage" href="workout-purpose-v1.md" target="_blank" rel="noopener">Apri sorgente .md</a>
         <span class="chip">3 preset · Vita · Gambe · Glutei</span>
       </div>
     </div>
@@ -2376,7 +2376,7 @@ function renderGuide() {
     const host = $("#guidePurpose");
     if (!host) return;
     if (!md) {
-      host.innerHTML = '<p class="md-p" style="color:var(--muted)">Documento non disponibile offline. Apri <code>wokout-purpose.md</code> dalla cartella dell\'app.</p>';
+      host.innerHTML = '<p class="md-p" style="color:var(--muted)">Documento non disponibile offline. Apri <code>workout-purpose-v1.md</code> dalla cartella dell\'app.</p>';
       return;
     }
     host.innerHTML = mdToHtml(md);
