@@ -1,20 +1,50 @@
-.DS_Store
+# =============================================
+#  .gitignore — Personal Workout
+#  Tutto ciò che NON deve finire su GitHub
+# =============================================
 
-# Database/demo di partenza: utile in locale, non serve nell'app finale
+# --- OS junk ---
+.DS_Store
+**/.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# --- Editor / IDE ---
+.idea/
+.vscode/
+.history/
+node_modules/
+
+# --- Backup locali (sicurezza, non versionare) ---
+index.original.html
+*.bak
+*.orig
+
+# --- Deliverable di proposta / preview / esplorazioni di design ---
+PROPOSTA_PREVIEW.html
+PROPOSTA_PREVIEW copia.html
+PROPOSTA_REWORK_PREMIUM_iOS.md
+*.copia.*
+*\ copia.*
+*\ copy.*
+
+# --- File di lavoro / sciolti ---
+planksuginocchia
 free-exercise-db-main/
 free-exercise-db-main.zip
 
-# File temporanei/sciolti creati durante la ricerca asset
-planksuginocchia
-assets/*.webm
+# --- Video sorgente raw (l'app usa solo i *-ios.mp4 ottimizzati) ---
+*.webm
+**/*.webm
 assets/*.mp4
-assets/.DS_Store
+assets/Fix*
+assets/Affondi*
+assets/Lateral*
 
-# Sorgenti video originali: l'app usa gli MP4 ottimizzati in *-ios.mp4
-assets/exercises/*.webm
-
-# Vecchi asset non piu' referenziati da index.html
-assets/exercises/CREDITS.md
+# --- Asset non referenziati dall'app ---
+assets/exercises/sumo-squat.mp4
+assets/exercises/sumo-squat.webm
 assets/exercises/toetaps.mov
 assets/exercises/toetaps-poster.jpg
 assets/exercises/toe-taps.png
@@ -24,8 +54,9 @@ assets/exercises/incline-plank-bench.jpg
 assets/exercises/incline-push-up.jpg
 assets/exercises/plank-shoulder-taps.jpg
 assets/exercises/side-leg-raise.jpg
-assets/exercises/side-plank.jpg
 assets/exercises/side-plank-knees.jpg
 assets/exercises/squat-hold.jpg
-assets/exercises/sumo-squat.mp4
-assets/exercises/sumo-squat.webm
+
+# Nota: `assets/exercises/side-plank.jpg` è MANTENUTO perché usato dall'app
+# come fallback statico per "Side plank corto" (advanced/core).
+# `assets/exercises/CREDITS.md` è MANTENUTO per attribuzione dei video.
