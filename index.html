@@ -284,16 +284,16 @@ a { color: var(--primary); text-decoration: none; }
 }
 
 /* TRAIN */
-.train-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+.train-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
 .cat-tab {
-  position: relative; padding: 14px 10px;
-  border-radius: var(--r-lg);
+  position: relative; padding: 8px 10px;
+  border-radius: var(--r-md);
   background: var(--surface); border: 1px solid var(--line);
   text-align: left; box-shadow: var(--shadow-1);
-  min-height: 70px;
+  min-height: 48px;
 }
-.cat-tab strong { display: block; font-size: 15px; font-weight: 800; }
-.cat-tab span { display: block; color: var(--muted); font-size: 11px; margin-top: 3px; }
+.cat-tab strong { display: block; font-size: 14px; font-weight: 800; line-height: 1.1; }
+.cat-tab span { display: block; color: var(--muted); font-size: 10px; margin-top: 1px; line-height: 1.15; }
 .cat-tab[aria-pressed="true"] { background: var(--grad-primary); color: #fff; border-color: transparent; }
 .cat-tab[aria-pressed="true"] span { color: rgba(255,255,255,0.85); }
 
@@ -1719,12 +1719,17 @@ function renderTrain() {
       `).join("")}
     </div>
 
-    <div class="seg" style="margin-top:12px" role="tablist" aria-label="Livello">
+    <div class="seg compact" style="margin-top:8px" role="tablist" aria-label="Livello">
       <button data-level="easy" aria-pressed="${state.level === "easy"}">Easy</button>
       <button data-level="advanced" aria-pressed="${state.level === "advanced"}">Advanced</button>
     </div>
 
-    <div class="preview-card">
+    <div class="cta-stack" style="margin-top:10px">
+      <button class="btn primary full" id="trainStart">${ICONS.play}<span>Inizia allenamento</span></button>
+      <button class="btn ghost full" id="trainOpenLib">Vedi nella Library</button>
+    </div>
+
+    <div class="preview-card" style="margin-top:14px">
       <div class="head">
         <h2>${cat.tab} · ${state.level === "easy" ? "Easy" : "Advanced"}</h2>
         <span class="pill">${w.exercises.length} esercizi</span>
@@ -1745,10 +1750,6 @@ function renderTrain() {
             <div class="num">${i+1}</div>
           </div>
         `).join("")}
-      </div>
-      <div class="cta-stack">
-        <button class="btn primary full" id="trainStart">${ICONS.play}<span>Inizia allenamento</span></button>
-        <button class="btn ghost full" id="trainOpenLib">Vedi nella Library</button>
       </div>
     </div>
   `;
