@@ -534,10 +534,10 @@ a { color: var(--primary); text-decoration: none; }
 
 .pip-floater {
   position: absolute;
-  bottom: calc(96px + env(safe-area-inset-bottom));
+  bottom: calc(108px + env(safe-area-inset-bottom));
   right: 14px;
-  width: 152px; height: 96px;
-  border-radius: 16px; overflow: hidden;
+  width: 220px; height: 138px;
+  border-radius: 18px; overflow: hidden;
   background: #000;
   border: 1px solid color-mix(in srgb, #fff 14%, transparent);
   box-shadow: var(--shadow-glass);
@@ -551,8 +551,8 @@ a { color: var(--primary); text-decoration: none; }
   pointer-events: none;
 }
 .pip-grip {
-  position: absolute; top: 6px; right: 6px;
-  width: 20px; height: 20px; display: grid; place-items: center;
+  position: absolute; top: 8px; right: 8px;
+  width: 26px; height: 26px; display: grid; place-items: center;
   background: rgba(0,0,0,0.45); border-radius: var(--r-pill);
   color: #fff; font-size: 10px;
 }
@@ -1072,8 +1072,11 @@ a { color: var(--primary); text-decoration: none; }
   .now[data-pattern="cinematic"] .ring-host { width: 180px; height: 180px; }
   .ring-host .ringnum .t { font-size: 44px; }
 }
-@media (min-width: 480px) {
-  .pip-floater { width: 180px; height: 110px; }
+@media (min-width: 430px) {
+  .pip-floater { width: 260px; height: 162px; }
+}
+@media (min-width: 560px) {
+  .pip-floater { width: 300px; height: 188px; }
 }
 
 </style>
